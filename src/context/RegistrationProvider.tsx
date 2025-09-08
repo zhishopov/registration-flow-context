@@ -22,7 +22,8 @@ export function RegistrationProvider({
   });
 
   const canMoveNext = validateStep(state.step, state);
-  const canSubmit = state.step === TOTAL_STEPS && canMoveNext;
+  const isLastStep = state.step === TOTAL_STEPS;
+  const canSubmit = isLastStep && isValidPassword(state.password);
 
   function updateField(field: Field, value: string) {
     setState({ ...state, [field]: value });
@@ -33,16 +34,14 @@ export function RegistrationProvider({
     const newStep = state.step + 1;
     setState({ ...state, step: newStep > TOTAL_STEPS ? TOTAL_STEPS : newStep });
   }
-
   function back() {
     const newStep = state.step - 1;
     setState({ ...state, step: newStep < 1 ? 1 : newStep });
   }
 
   function submit() {
-    if (state.step === TOTAL_STEPS && isValidPassword(state.password)) {
-      setState({ ...state, status: "success" });
-    }
+    if (!canSubmit) return;
+    setState({ ...state, status: "success" });
   }
 
   function reset() {
