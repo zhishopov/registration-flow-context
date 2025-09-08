@@ -13,7 +13,7 @@ export function isValidPassword(password: string): boolean {
 }
 
 export function validateStep(step: number, state: RegistrationState): boolean {
-    if(step === 1) return isValidName(state.title);
+    if(step === 1) return isValidName(state.name);
     if(step === 2) return isValidEmail(state.email);
     if(step === 1) return isValidPassword(state.password);
 
