@@ -1,39 +1,21 @@
+import { createContext } from "react";
 import type { RegistrationState } from "./types";
-import { isValidPassword } from "./validation";
 
-const TOTAL_STEPS = 3 as const;
+export type Field = "name" | "email" | "password";
 
+export type RegistrationContextSignature = RegistrationState & {
+  TOTAL_STEPS: number;
+  updateField: (field: Field, value: string) => void;
+  canMoveNext: boolean;
+  canSubmit: boolean;
+  next: () => void;
+  back: () => void;
+  submit: () => void;
+  reset: () => void;
+};
 
-type Action =
-  | { type: "UPDATE_FIELD"; field: "name" | "email" | "password"; value: string }
-  | { type: "NEXT" }
-  | { type: "BACK" }
-  | { type: "SUBMIT" }
-  | { type: "RESET" };
+export const RegistrationContext = createContext<
+  RegistrationContextSignature | undefined
+>(undefined);
 
-  const initialState: RegistrationState = {
-    name: "",
-    email: "",
-    password: "",
-    step: 1,
-    status: "idle"
-  };
-
-  function registrationReducer(state: RegistrationState, action: Action): RegistrationState {
-    if(action.type === "UPDATE_FIELD") {
-        return {...state, [action.field]: action.value};
-    } else if(action.type === "NEXT") {
-        return { ...state, step: Math.min(state.step + 1, TOTAL_STEPS) };
-    } else if(action.type === "BACK") {
-        return {...state, step: Math.max(state.step - 1, 1)};
-    } else if(action.type === "SUBMIT") {
-        if (state.step === TOTAL_STEPS && isValidPassword(state.password)) {
-            return { ...state, status: "success" };
-          }
-          return state;
-    } else if(action.type === "RESET") {
-        return {...initialState};
-    } else {
-        return state;
-    }
-  }
+export const TOTAL_STEPS = 3 as const;
